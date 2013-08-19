@@ -21,7 +21,7 @@ describe 'ceph::conf' do
     it { should contain_concat('/etc/ceph/ceph.conf').with(
       'owner'   => 'root',
       'group'   => 0,
-      'mode'    => '0660',
+      'mode'    => '0664',
       'require' => 'Package[ceph]'
     ) }
 
@@ -64,15 +64,17 @@ describe 'ceph::conf' do
 
     let :params do
       {
-        :fsid            => 'qwertyuiop',
-        :auth_type       => 'dummy',
-        :journal_size_mb => 8192,
-        :cluster_network => '10.0.0.0/16',
-        :public_network  => '10.1.0.0/16',
-        :mon_data        => '/opt/ceph/mon._id',
-        :osd_data        => '/opt/ceph/osd._id',
-        :osd_journal     => '/opt/ceph/journal/osd._id',
-        :mds_data        => '/opt/ceph/mds._id'
+        :fsid              => 'qwertyuiop',
+        :auth_type         => 'dummy',
+        :pool_default_size => 3,
+        :journal_size_mb   => 8192,
+        :cluster_network   => '10.0.0.0/16',
+        :public_network    => '10.1.0.0/16',
+        :mon_data          => '/opt/ceph/mon._id',
+        :mon_init_members  => 'a , b , c',
+        :osd_data          => '/opt/ceph/osd._id',
+        :osd_journal       => '/opt/ceph/journal/osd._id',
+        :mds_data          => '/opt/ceph/mds._id'
       }
     end
 
@@ -93,12 +95,15 @@ describe 'ceph::conf' do
           '  auth service required = dummy',
           '  auth client required = dummy',
           '  keyring = /etc/ceph/keyring',
-          '  fsid = qwertyuiop',
-          '[mon]',
-          '  mon data = /opt/ceph/mon._id', '[osd]',
-          '  osd journal size = 8192',
+          '  osd pool default size = 3',
           '  cluster network = 10.0.0.0/16',
           '  public network = 10.1.0.0/16',
+          '  fsid = qwertyuiop',
+          '[mon]',
+          '  mon initial members = a , b , c',
+          '  mon data = /opt/ceph/mon._id',
+          '[osd]',
+          '  osd journal size = 8192',
           '  filestore flusher = false',
           '  osd data = /opt/ceph/osd._id',
           '  osd journal = /opt/ceph/journal/osd._id',
