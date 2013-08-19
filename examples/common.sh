@@ -22,6 +22,14 @@ grep -q "ceph-osd2" /etc/hosts || echo "192.168.251.102	ceph-osd2 ceph-osd2.test
 grep -q "ceph-mds0" /etc/hosts || echo "192.168.251.150	ceph-mds0 ceph-mds0.test" >> /etc/hosts
 grep -q "ceph-mds1" /etc/hosts || echo "192.168.251.151	ceph-mds1 ceph-mds1.test" >> /etc/hosts
 
+# Add PuppetLabs APT repo for Ubuntu 12.04
+apt-key adv --recv-key --keyserver pool.sks-keyservers.net 4BD6EC30
+echo "deb http://apt.puppetlabs.com precise main
+deb-src http://apt.puppetlabs.com precise main
+deb http://apt.puppetlabs.com precise dependencies
+deb-src http://apt.puppetlabs.com precise dependencies" > /etc/apt/sources.list.d/apt.puppetlabs.com.sources.list
+
+#aptitude -y full-upgrade
 aptitude update
 
 # Install ruby 1.8 and ensure it is the default
@@ -31,7 +39,7 @@ update-alternatives --set ruby /usr/bin/ruby1.8
 
 # Install puppetmaster, etc. …
 if hostname | grep -q "ceph-mon0"; then
-    aptitude install -y puppetmaster sqlite3 libsqlite3-ruby libactiverecord-ruby git augeas-tools puppet ruby1.8-dev libruby1.8
+    aptitude install -y puppetmaster sqlite3 libsqlite3-ruby libactiverecord-ruby git puppet ruby1.8-dev libruby1.8 augeas-tools
 
     # This lens seems to be broken currently on wheezy/sid ?
     # test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
@@ -58,11 +66,16 @@ else
 
     # This lens seems to be broken currently on wheezy/sid ?
     test -f /usr/share/augeas/lenses/dist/cgconfig.aug && rm -f /usr/share/augeas/lenses/dist/cgconfig.aug
-    augtool << EOT
-set /files/etc/puppet/puppet.conf/agent/pluginsync true
-set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
-save
-EOT
+    #augtool << EOT
+#set /files/etc/puppet/puppet.conf/agent/pluginsync true
+#set /files/etc/puppet/puppet.conf/agent/server ceph-mon0.test
+#save
+#EOT
+
+mkdir /etc/puppet
+echo "[agent]
+      pluginsync=true
+      server=ceph-mon0.test" > /etc/puppet/puppet.conf
 
 fi
 

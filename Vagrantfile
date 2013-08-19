@@ -3,7 +3,7 @@
 
 Vagrant.configure("2") do |config|
   # Vagrant >1.1 config
-  config.vm.box = "raring64"
+  config.vm.box = "precise64"
 
   #config.vm.provider "virtualbox" do |vb|
     config.vm.box_url = "http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box"
@@ -38,7 +38,7 @@ Vagrant.configure("2") do |config|
       (0..1).each do |d|
         config.vm.provider "virtualbox" do |vb|
           vb.customize [ "createhd", "--filename", "disk-#{i}-#{d}", "--size", "5000" ]
-          vb.customize [ "storageattach", :id, "--storagectl", "SATAController", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
+          vb.customize [ "storageattach", :id, "--storagectl", "SATA Controller", "--port", 3+d, "--device", 0, "--type", "hdd", "--medium", "disk-#{i}-#{d}.vdi" ]
         end
         config.vm.provider "vmware_fusion" do |vf|
           #osd.vm.vmx[""] =

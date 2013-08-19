@@ -74,10 +74,20 @@ node /ceph-osd.?\.test/ {
 
 node 'ceph-mds0.test' {
 
+  class { 'role_ceph':
+    fsid           => $::fsid,
+    auth_type      => 'cephx',
+  }
+
   ceph::mds { '0': fsid => $::fsid }
 }
 
 node 'ceph-mds1.test' {
+
+  class { 'role_ceph':
+    fsid           => $::fsid,
+    auth_type      => 'cephx',
+  }
 
   ceph::mds { '1': fsid => $::fsid }
 }

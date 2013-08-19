@@ -3,12 +3,12 @@
 class ceph::params {
 
   # Ceph Release Parameter
-  # Allowed: argonaut, bobtail, cuttlefish
-  $ceph_release = 'cuttlefish'
+  # Allowed: argonaut, bobtail, cuttlefish, dumpling
+  $ceph_release = 'dumpling'
 
   # File System Type Parameter
   # Allowed: xfs (recommended for Production), btrfs (only for Testing)
-  $fs_type = 'btrfs'
+  $fs_type = 'xfs'
 
   case $::osfamily {
     'Debian': {
